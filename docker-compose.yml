@@ -32,7 +32,7 @@ services:
   # PostgreSQL Database
   # ──────────────────────────────────
   postgres:
-    image: postgis/postgis:15-3.4-alpine
+    image: postgis/postgis:18-3.6
     container_name: micomunapp-postgres
     ports:
       - "5432:5432"
@@ -41,7 +41,7 @@ services:
       - POSTGRES_PASSWORD=micomunapp_secret
       - POSTGRES_DB=micomunapp_db
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U micomunapp -d micomunapp_db"]
       interval: 10s

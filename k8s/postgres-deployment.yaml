@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgis/postgis:15-3.4-alpine
+          image: postgis/postgis:18-3.6
           ports:
             - containerPort: 5432
           env:
@@ -28,7 +28,7 @@ spec:
               value: "micomunapp_db"
           volumeMounts:
             - name: postgres-storage
-              mountPath: /var/lib/postgresql/data
+              mountPath: /var/lib/postgresql
           readinessProbe:
             exec:
               command:
