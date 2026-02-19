@@ -1,0 +1,60 @@
+services:
+  # ──────────────────────────────────
+  # NestJS API
+  # ──────────────────────────────────
+  api:
+    build:
+      context: ./micomunapp-api
+      dockerfile: Dockerfile
+      target: development
+    container_name: micomunapp-api
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./micomunapp-api:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - NODE_ENV=development
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=micomunapp
+      - POSTGRES_PASSWORD=micomunapp_secret
+      - POSTGRES_DB=micomunapp_db
+    command: npm run start:dev
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - micomunapp-network
+
+  # ──────────────────────────────────
+  # PostgreSQL Database
+  # ──────────────────────────────────
+  postgres:
+    image: postgres:15-alpine
+    container_name: micomunapp-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=micomunapp
+      - POSTGRES_PASSWORD=micomunapp_secret
+      - POSTGRES_DB=micomunapp_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U micomunapp -d micomunapp_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - micomunapp-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  micomunapp-network:
+    driver: bridge
