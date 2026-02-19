@@ -1,0 +1,3 @@
+# MiComunnApp
+
+Proyecto inicializado.
